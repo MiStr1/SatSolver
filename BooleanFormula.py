@@ -307,9 +307,9 @@ class BooleanFormula:
         for formula, var in equ:
             variable = BooleanFormula(Operation.VARIABLE, var, keep_int=True)
             if formula.operation == Operation.NOT:
-                kno_sub_form.append(BooleanFormula(Operation.OR, [variable, formula]))
+                kno_sub_form.append(BooleanFormula(Operation.OR, [variable, formula.sub_formulas]))
                 kno_sub_form.append(BooleanFormula(Operation.OR, [
-                    BooleanFormula(Operation.NOT, variable), BooleanFormula(Operation.NOT, formula)]))
+                    BooleanFormula(Operation.NOT, variable), formula]))
             elif formula.operation == Operation.AND:
                 big_or = [variable]
                 neg = BooleanFormula(Operation.NOT, variable)
