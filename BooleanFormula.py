@@ -303,9 +303,7 @@ class BooleanFormula:
 
     def get_kno(self):
         f, equ, _ = self.tseytin_step_one()
-        if len(equ) == 0: # simple form
-            return BooleanFormula(Operation.AND, [BooleanFormula(Operation.OR, [f])])
-        kno_sub_form = []
+        kno_sub_form = [BooleanFormula(Operation.OR, [f])]
         for formula, var in equ:
             variable = BooleanFormula(Operation.VARIABLE, var, keep_int=True)
             if formula.operation == Operation.NOT:
@@ -344,8 +342,5 @@ class BooleanFormula:
             if out.sub_formulas[sub_f].operation != Operation.OR:
                 out.sub_formulas[sub_f] = BooleanFormula(Operation.OR, [out.sub_formulas[sub_f]])
         return out
-
-
-
 
 
