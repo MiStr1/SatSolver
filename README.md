@@ -14,11 +14,17 @@ c = BooleanFormula(Operation.VARIABLE, "x")  x
 
 d = BooleanFormula(Operation.NOT, a)  not ⊤
 
-e = BooleanFormula(Operation.AND, [a,b,d])    ⊤ ∧ ⊥  ∧ not ⊤
+e = BooleanFormula(Operation.AND, [a,b,d])    ⊤ ∧ ⊥  ∧ ¬ ⊤
 
 f = BooleanFormula(Operation.OR, [a,b])   ⊤ ∨ ⊥
 
 f = BooleanFormula(Operation.IMPLICATION, [a,b])  ⊤ → ⊥
+
+#### Printing formula
+
+print(f.to_string())
+
+⊤ → ⊥
 
 #### Solving formula
 
