@@ -23,10 +23,10 @@ class BooleanFormula:
     for FALSUM, TAUTOLOGY it is None for VARIABLE it is the name of the variable for not it is a
     single sub_formula, for other three it is a list of sub_formulas
     """
-    def __init__(self, operation, sub_formulas=None):
+    def __init__(self, operation, sub_formulas=None, keep_int=False):
         self.operation = operation
         self.sub_formulas = sub_formulas
-        if self.operation == Operation.VARIABLE:
+        if self.operation == Operation.VARIABLE and not keep_int:
             self.sub_formulas = str(self.sub_formulas)
 
     def get_variables(self):
@@ -48,7 +48,9 @@ class BooleanFormula:
         elif self.operation == Operation.TAUTOLOGY:
             return "⊤"
         elif self.operation == Operation.VARIABLE:
-            return str(self.sub_formulas)
+            if isinstance(self.sub_formulas, int):
+                return "i"+str(self.sub_formulas)
+            return self.sub_formulas
         elif self.operation == Operation.NOT:
             return "¬" + self.sub_formulas.to_string(False)
         elif self.operation == Operation.AND:
@@ -200,9 +202,19 @@ class BooleanFormula:
     def get_top_level_variable(self):
         # returns Formula if it is a variable or negation of variable
         if self.operation == Operation.VARIABLE:
-            return (self.sub_formulas, True)
+            tmp = self.sub_formulas
+            if isinstance(tmp, int):
+                tmp = "i"+str(tmp)
+            else:
+                tmp = "s" + tmp
+            return (tmp, True)
         if self.operation == Operation.NOT and self.sub_formulas.operation == Operation.VARIABLE:
-            return (self.sub_formulas.sub_formulas, False)
+            tmp = self.sub_formulas.sub_formulas
+            if isinstance(tmp, int):
+                tmp = "i" + str(tmp)
+            else:
+                tmp = "s" + tmp
+            return (tmp, False)
         return ("", True)
 
     def remove_variables(self):
@@ -277,7 +289,7 @@ class BooleanFormula:
         if self.operation == Operation.NOT:
             sub_form, equ, used_vars = self.sub_formulas.tseytin_step_one(used_vars)
             equ.append((BooleanFormula(Operation.NOT, sub_form), used_vars))
-            return BooleanFormula(Operation.VARIABLE, used_vars), equ, used_vars+1
+            return BooleanFormula(Operation.VARIABLE, used_vars, keep_int=True), equ, used_vars+1
         elif self.operation in (Operation.IMPLICATION, Operation.AND, Operation.OR):
             new_sub_form = []
             eq = []
@@ -286,16 +298,16 @@ class BooleanFormula:
                 new_sub_form.append(sub_form)
                 eq += equ
             eq.append((BooleanFormula(self.operation, new_sub_form), used_vars))
-            return BooleanFormula(Operation.VARIABLE, used_vars), eq, used_vars+1
+            return BooleanFormula(Operation.VARIABLE, used_vars, keep_int=True), eq, used_vars+1
         return self, [], used_vars
 
     def get_kno(self):
         f, equ, _ = self.tseytin_step_one()
         if len(equ) == 0: # simple form
-            return BooleanFormula(Operation.VARIABLE, [f])
+            return BooleanFormula(Operation.AND, [BooleanFormula(Operation.OR, [f])])
         kno_sub_form = []
         for formula, var in equ:
-            variable = BooleanFormula(Operation.VARIABLE, var)
+            variable = BooleanFormula(Operation.VARIABLE, var, keep_int=True)
             if formula.operation == Operation.NOT:
                 kno_sub_form.append(BooleanFormula(Operation.OR, [variable, formula]))
                 kno_sub_form.append(BooleanFormula(Operation.OR, [

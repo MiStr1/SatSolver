@@ -58,12 +58,13 @@ f = BF(OP.OR, [BF(OP.AND, [BF(OP.TAUTOLOGY), BF(OP.NOT, BF(OP.VARIABLE, "x"))]),
 
 print(f.get_kno().to_string())
 
-(0 ∨ ¬x) ∧ (¬0 ∨ x) ∧ (0 ∨ ¬1) ∧ (1 ∨ ¬0) ∧ (2 ∨ ¬1) ∧ (¬2 ∨ 1)
+(i0 ∨ ¬x) ∧ (¬i0 ∨ x) ∧ (i0 ∨ ¬i1) ∧ (i1 ∨ ¬i0) ∧ (i2 ∨ ¬i1) ∧ (¬i2 ∨ i1)
 
 f.simplify()
 print(f.get_kno().to_string())
 
-(0 ∨ ¬x) ∧ (¬0 ∨ x)
+(i0 ∨ ¬x) ∧ (¬i0 ∨ x)
 
-NOTE !!! Tseytin creates variables from 0 -> inf do not use your variables with numeric name.
+NOTE !!! Tseytin creates variables from 0 -> inf but they are in int type since all old variables
+get converted to string there should be no clashing. 
 
