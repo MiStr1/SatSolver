@@ -200,7 +200,7 @@ class BooleanFormula:
                     self.operation = Operation.OR
                 else:
                     self.operation = Operation.AND
-                _ = map(lambda t: t.push_negations, self.sub_formulas)
+                _ = map(lambda t: t.push_negations(), self.sub_formulas)
                 return True
             elif self.sub_formulas.operation == Operation.IMPLICATION:
                 self.sub_formulas = self.sub_formulas.sub_formulas
