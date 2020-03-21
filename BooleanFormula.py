@@ -162,7 +162,7 @@ class BooleanFormula:
 
         if self.operation == Operation.IMPLICATION:
             # first call the function recursively and check if there were changes
-            change = self.sub_formulas[0].remove_constants or self.sub_formulas[1].remove_constants
+            change = self.sub_formulas[0].remove_constants() or self.sub_formulas[1].remove_constants()
             if self.sub_formulas[0].operation == Operation.FALSUM or \
                self.sub_formulas[1].operation == Operation.TAUTOLOGY:
                 self.operation = Operation.TAUTOLOGY
