@@ -245,7 +245,7 @@ class BooleanFormula:
                         else:
                             self.operation = Operation.FALSUM
                         self.sub_formulas = None
-                        return False
+                        return True
             if change:
                 self.sub_formulas = new_sub_formulas
             return change
