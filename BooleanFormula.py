@@ -265,7 +265,7 @@ class BooleanFormula:
         if self.operation == Operation.IMPLICATION:
             # first call the function recursively and check if there were changes
             change = self.sub_formulas[0].remove_variables() or self.sub_formulas[1].remove_variables()
-            var1, var2 = list(set(self.sub_formulas[0].get_variables)), list(set(self.sub_formulas[1].get_variables))
+            var1, var2 = list(set(self.sub_formulas[0].get_variables())), list(set(self.sub_formulas[1].get_variables()))
             if len(var1) == 1 and len(var2) == 1 and var1[0] == var2[0]: # only one same var in both subformulas
                 if self.solve({var1[0]:False}) == self.solve({var1[0]:True}): # outcome is not affected by var
                     if self.solve({var1[0], False}):
