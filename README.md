@@ -12,7 +12,7 @@ b = BooleanFormula(Operation.FALSUM)  ⊥
 
 c = BooleanFormula(Operation.VARIABLE, "x")  x
 
-d = BooleanFormula(Operation.NOT, a)  not ⊤
+d = BooleanFormula(Operation.NOT, a)  ¬ ⊤
 
 e = BooleanFormula(Operation.AND, [a,b,d])    ⊤ ∧ ⊥  ∧ ¬ ⊤
 
@@ -67,4 +67,3 @@ print(f.get_kno().to_string())
 
 NOTE !!! Tseytin creates variables from 0 -> inf but they are in int type since all old variables
 get converted to string there should be no clashing. 
-
