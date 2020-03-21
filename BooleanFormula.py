@@ -302,29 +302,32 @@ class BooleanFormula:
         return self, [], used_vars
 
     def get_kno(self):
+        """
+        gets the equations from first step and constructs knos from each equation
+        """
         f, equ, _ = self.tseytin_step_one()
         kno_sub_form = [BooleanFormula(Operation.OR, [f])]
         for formula, var in equ:
             variable = BooleanFormula(Operation.VARIABLE, var, keep_int=True)
-            if formula.operation == Operation.NOT:
+            if formula.operation == Operation.NOT:   # i == NOT a
                 kno_sub_form.append(BooleanFormula(Operation.OR, [variable, formula.sub_formulas]))
                 kno_sub_form.append(BooleanFormula(Operation.OR, [
                     BooleanFormula(Operation.NOT, variable), formula]))
-            elif formula.operation == Operation.AND:
+            elif formula.operation == Operation.AND:  # i == AND a,b,c
                 big_or = [variable]
                 neg = BooleanFormula(Operation.NOT, variable)
                 for sub_form in formula.sub_formulas:
                     big_or.append(BooleanFormula(Operation.NOT, sub_form))
                     kno_sub_form.append(BooleanFormula(Operation.OR, [sub_form, neg]))
                 kno_sub_form.append(BooleanFormula(Operation.OR, big_or))
-            elif formula.operation == Operation.OR:
+            elif formula.operation == Operation.OR:  # i == OR a,b,c
                 big_or = [BooleanFormula(Operation.NOT, variable)]
                 for sub_form in formula.sub_formulas:
                     big_or.append(sub_form)
                     neg = BooleanFormula(Operation.NOT, sub_form)
                     kno_sub_form.append(BooleanFormula(Operation.OR, [variable, neg]))
                 kno_sub_form.append(BooleanFormula(Operation.OR, big_or))
-            elif formula.operation == Operation.IMPLICATION:
+            elif formula.operation == Operation.IMPLICATION: # i == IMPLICATION a,b
                 formula1, formula2 = formula.sub_formulas
                 kno_sub_form.append(BooleanFormula(Operation.OR, [
                     BooleanFormula(Operation.NOT, formula1), formula2, BooleanFormula(Operation.NOT, variable)
