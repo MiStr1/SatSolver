@@ -67,3 +67,15 @@ print(f.get_kno().to_string())
 
 NOTE !!! Tseytin creates variables from 0 -> inf but they are in int type since all old variables
 get converted to string there should be no clashing. 
+
+#### Check if formula is kno
+
+f = OR([AND([TAUTOLOGY(), NOT(VARIABLE("x"))]), FALSUM()])
+
+f.is_kno() False
+
+f.get_kno().is_kno() True
+
+NOTE !!!  I have made it so that There should be an AND on the outside. AND contains only ORS and has at least one so
+AND([TAUTOLOGY()]) or AND([]) are not a kno. I made it this way because I belive that implementing SAT will be easier if 
+we put this constraint. Tseytin returns formulas in this format.

@@ -1,5 +1,6 @@
 from enum import Enum
 from functools import reduce
+from copy import deepcopy
 
 class Operation(Enum):
     FALSUM = 0 # always false
@@ -291,6 +292,21 @@ class BooleanFormula:
     # Tseytin #
     ###########
 
+    def is_basic_or(self):
+        """
+        :return: true if its in a form of an OR in kno
+        """
+        exceptable = {Operation.VARIABLE, Operation.TAUTOLOGY, Operation.FALSUM}
+        return self.operation == Operation.OR and \
+            all(map(lambda t: t.operation in exceptable or
+                              (t.operation==Operation.NOT and t.sub_formulas.operation in exceptable), self.sub_formulas))
+
+    def is_kno(self):
+        """
+        :return: true if kno
+        """
+        return self.operation == Operation.AND and all(map(lambda t: t.is_basic_or(), self.sub_formulas)) and len(self.sub_formulas) > 0
+
     def tseytin_step_one(self, used_vars=0):
         """
         this method maps sub formulas to new variables so that those equation can be used in creation of kno
@@ -317,6 +333,8 @@ class BooleanFormula:
         """
         gets the equations from first step and constructs knos from each equation
         """
+        if self.is_kno():
+            return deepcopy(self)
         f, equ, _ = self.tseytin_step_one()
         kno_sub_form = [BooleanFormula(Operation.OR, [f])]
         for formula, var in equ:
