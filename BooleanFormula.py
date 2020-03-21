@@ -344,3 +344,37 @@ class BooleanFormula:
         return out
 
 
+# here so there is no need to always write BooleanFormula in formulas
+class FALSUM(BooleanFormula):
+    def __init__(self):
+        super().__init__(Operation.FALSUM)
+
+
+class TAUTOLOGY(BooleanFormula):
+    def __init__(self):
+        super().__init__(Operation.TAUTOLOGY)
+
+
+class VARIABLE(BooleanFormula):
+    def __init__(self, name):
+        super().__init__(Operation.VARIABLE, name)
+
+
+class NOT(BooleanFormula):
+    def __init__(self, sub_formula):
+        super().__init__(Operation.NOT, sub_formula)
+
+
+class AND(BooleanFormula):
+    def __init__(self, sub_formulas):
+        super().__init__(Operation.AND, sub_formulas)
+
+
+class OR(BooleanFormula):
+    def __init__(self, sub_formulas):
+        super().__init__(Operation.OR, sub_formulas)
+
+
+class IMPLICATION(BooleanFormula):
+    def __init__(self, sub_formula1, sub_formula2):
+        super().__init__(Operation.IMPLICATION, [sub_formula1, sub_formula2])
