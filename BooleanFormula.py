@@ -168,6 +168,14 @@ class BooleanFormula:
                 self.operation = Operation.TAUTOLOGY
                 self.sub_formulas = None
                 return True
+            if self.sub_formulas[0].operation == Operation.TAUTOLOGY:
+                self.operation = self.sub_formulas[1].operation
+                self.sub_formulas = self.sub_formulas[1].sub_formulas
+                return True
+            if self.sub_formulas[1].operation == Operation.FALSUM:
+                self.operation = self.sub_formulas[0].operation
+                self.sub_formulas = self.sub_formulas[0].sub_formulas
+                return True
             return change
 
         return False
@@ -182,7 +190,8 @@ class BooleanFormula:
                 # double negations remove both negations
                 self.operation = self.sub_formulas.sub_formulas.operation
                 self.sub_formulas = self.sub_formulas.sub_formulas.sub_formulas
-                return self.push_negations()
+                self.push_negations()
+                return True
             elif self.sub_formulas.operation == Operation.AND or self.sub_formulas.operation == Operation.OR:
                 # de morgan
                 op = self.sub_formulas.operation
@@ -191,12 +200,14 @@ class BooleanFormula:
                     self.operation = Operation.OR
                 else:
                     self.operation = Operation.AND
-                return any(map(lambda t: t.push_negations, self.sub_formulas))
+                _ = map(lambda t: t.push_negations, self.sub_formulas)
+                return True
             elif self.sub_formulas.operation == Operation.IMPLICATION:
-                self.sub_formulas = list(self.sub_formulas.sub_formulas)
+                self.sub_formulas = self.sub_formulas.sub_formulas
                 self.sub_formulas[1] = BooleanFormula(Operation.NOT, self.sub_formulas[1])
                 self.operation = Operation.AND
-                return any(map(lambda t: t.push_negations(), self.sub_formulas))
+                _ = map(lambda t: t.push_negations(), self.sub_formulas)
+                return True
 
         return False
 
