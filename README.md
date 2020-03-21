@@ -6,25 +6,27 @@ Sat solver for project in logika v računalništvu
 
 #### Creating formula
 
-a = BooleanFormula(Operation.TAUTOLOGY)  ⊤
+a = TAUTOLOGY()  ⊤
 
-b = BooleanFormula(Operation.FALSUM)  ⊥
+b = FALSUM()  ⊥
 
-c = BooleanFormula(Operation.VARIABLE, "x")  x
+c = VARIABLE("x")  x
 
-d = BooleanFormula(Operation.NOT, a)  ¬ ⊤
+d = NOT(a)  ¬ ⊤
 
-e = BooleanFormula(Operation.AND, [a,b,d])    ⊤ ∧ ⊥  ∧ ¬ ⊤
+e = AND([a,b,d])    ⊤ ∧ ⊥  ∧ ¬ ⊤
 
-f = BooleanFormula(Operation.OR, [a,b])   ⊤ ∨ ⊥
+f = OR([a,b])   ⊤ ∨ ⊥
 
-f = BooleanFormula(Operation.IMPLICATION, [a,b])  ⊤ → ⊥
+g = IMPLICATION(a,b)  ⊤ → ⊥
+
+h = AND([a,b,c,d,e,f,g])
 
 #### Printing formula
 
-print(f.to_string())
+print(h.to_string())
 
-⊤ → ⊥
+⊤ ∧ ⊥ ∧ x ∧ ¬⊤ ∧ (⊤ ∧ ⊥ ∧ ¬⊤) ∧ (⊤ ∨ ⊥) ∧ (⊤ → ⊥)
 
 #### Solving formula
 
@@ -38,11 +40,9 @@ c.solve({"x": False}) -> False
 
 #### Simplifinig
 
-from BooleanFormula import BooleanFormula as BF
+from BooleanFormula import *
 
-from BooleanFormula import Operation as OP
-
-f = BF(OP.OR, [BF(OP.AND, [BF(OP.TAUTOLOGY), BF(OP.NOT, BF(OP.VARIABLE, "x"))]), BF(OP.FALSUM)])
+f = OR([AND([TAUTOLOGY(), NOT(VARIABLE("x"))]), FALSUM()])
 
 print(f.to_string())   
 (⊤ ∧ ¬x) ∨ ⊥
@@ -54,7 +54,7 @@ print(f.to_string())
 
 #### Tseytin kno form
 
-f = BF(OP.OR, [BF(OP.AND, [BF(OP.TAUTOLOGY), BF(OP.NOT, BF(OP.VARIABLE, "x"))]), BF(OP.FALSUM)])
+f = OR([AND([TAUTOLOGY(), NOT(VARIABLE("x"))]), FALSUM()])
 
 print(f.get_kno().to_string())
 
