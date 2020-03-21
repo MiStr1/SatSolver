@@ -106,6 +106,7 @@ class BooleanFormula:
                 # remove and or or
                 self.operation = self.sub_formulas[0].operation
                 self.sub_formulas = self.sub_formulas[0].sub_formulas
+                self.remove_empty()
                 return True
             # and or or to constant
             if self.operation == Operation.AND:
