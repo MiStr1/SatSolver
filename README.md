@@ -2,9 +2,13 @@
 
 Sat solver for project in logika v računalništvu
 
-## Usage
+# Usage
+
+## BooleanFormula
 
 #### Creating formula
+
+from BooleanFormula import *
 
 a = TAUTOLOGY()  ⊤
 
@@ -34,23 +38,33 @@ a.solve()  -> True
 
 b.solve() -> False
 
+c.solve() -> ValueMissing exception
+
+c.solve(default_true=True) -> True
+
 c.solve({"x": True}) -> True
 
 c.solve({"x": False}) -> False
 
+#### Partial solving
+
+a = AND([VARIABLE("x"), VARIABLE("y")])
+
+b = a.partial_solve({"x": True})
+
+print(b.to_string())
+
+⊤ ∧ y
+
 #### Simplifinig
 
-from BooleanFormula import *
+print(b.to_string())   
+⊤ ∧ y
 
-f = OR([AND([TAUTOLOGY(), NOT(VARIABLE("x"))]), FALSUM()])
+b.simplify()
 
-print(f.to_string())   
-(⊤ ∧ ¬x) ∨ ⊥
-
-f.simplify()
-
-print(f.to_string())   
-¬x
+print(b.to_string())   
+y
 
 #### Tseytin kno form
 
@@ -76,6 +90,22 @@ f.is_kno() False
 
 f.get_kno().is_kno() True
 
-NOTE !!!  I have made it so that There should be an AND on the outside. AND contains only ORS and has at least one so
-AND([TAUTOLOGY()]) or AND([]) are not a kno. I made it this way because I belive that implementing SAT will be easier if 
-we put this constraint. Tseytin returns formulas in this format.
+## DPLL
+
+from DPLL import DPLL
+
+from BooleanFormula import *
+
+f = OR([AND([TAUTOLOGY(), NOT(VARIABLE("x"))]), FALSUM()])
+
+f.simplify()
+
+k = f.get_kno()
+
+from DPLL import DPLL
+
+solv = DPLL(k)
+
+[(0, True), ('x', False)]
+
+k.solve(dict(solv)) -> True

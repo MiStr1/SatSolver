@@ -65,8 +65,9 @@ class BooleanFormula:
             out = "(" + out + ")"
         return out
 
-    def solve(self, values=None):
+    def solve(self, values=None, default_true=False):
         """
+        :param default_true: if no value is given var is declared True
         :param values: a dictionary which maps names of variables to their value
         :returns: True False value of the formula
         """
@@ -79,6 +80,8 @@ class BooleanFormula:
         elif self.operation == Operation.VARIABLE: # in this case subformulas is a variable name
             if self.sub_formulas in values:
                 return values[self.sub_formulas]
+            elif default_true:
+                return True
             else:
                 raise ValueMissing
         elif self.operation == Operation.NOT: # in this case subformulas is only one formula
@@ -89,6 +92,33 @@ class BooleanFormula:
             return any(map(lambda t: t.solve(values), self.sub_formulas))
         elif self.operation == Operation.IMPLICATION: # in this case subformulas is a pair of two formulas
             return self.sub_formulas[1].solve(values) or not self.sub_formulas[0].solve(values)
+
+    def partial_solve(self, values=None):
+        """
+        :param values: dictionary which maps names of variables to their value
+        :return: new Formula with inserted values
+        """
+        if values is None:
+            values = {}
+        if self.operation == Operation.FALSUM: # in this case subformulas is default None
+            return BooleanFormula(Operation.FALSUM)
+        elif self.operation == Operation.TAUTOLOGY:
+            return BooleanFormula(Operation.TAUTOLOGY)
+        elif self.operation == Operation.VARIABLE: # in this case subformulas is a variable name
+            if self.sub_formulas in values:
+                if values[self.sub_formulas]:
+                    return BooleanFormula(Operation.TAUTOLOGY)
+                return BooleanFormula(Operation.FALSUM)
+            else:
+                return BooleanFormula(Operation.VARIABLE, self.sub_formulas)
+        elif self.operation == Operation.NOT: # in this case subformulas is only one formula
+            return BooleanFormula(Operation.NOT, self.sub_formulas.partial_solve(values))
+        elif self.operation == Operation.AND: # in this case subformulas is a list (or iterable struct.) of formulas
+            return BooleanFormula(Operation.AND, list(map(lambda t: t.partial_solve(values), self.sub_formulas)))
+        elif self.operation == Operation.OR:
+            return BooleanFormula(Operation.OR, list(map(lambda t: t.partial_solve(values), self.sub_formulas)))
+        elif self.operation == Operation.IMPLICATION: # in this case subformulas is a pair of two formulas
+            return BooleanFormula(Operation.IMPLICATION, list(map(lambda t: t.partial_solve(values), self.sub_formulas)))
 
     ####################################################
     # cleaning functions used to simplify the formula  #
@@ -288,24 +318,40 @@ class BooleanFormula:
             if not any([self.push_negations(), self.remove_empty(), self.remove_variables(), self.remove_constants()]):
                 break
 
+    def simplify_kno(self):
+        """
+        calls all cleaning functions until there is no more changes
+        leaves And with one element
+        """
+        while True:
+            if not any([self.remove_empty(), self.remove_variables(), self.remove_constants()]):
+                break
+
     ###########
     # Tseytin #
     ###########
+
+    def is_basic_el(self):
+        basic_op = {Operation.TAUTOLOGY, Operation.FALSUM, Operation.VARIABLE}
+        return self.operation in basic_op or (self.operation == Operation.NOT and
+            self.sub_formulas.operation in basic_op)
 
     def is_basic_or(self):
         """
         :return: true if its in a form of an OR in kno
         """
-        exceptable = {Operation.VARIABLE, Operation.TAUTOLOGY, Operation.FALSUM}
-        return self.operation == Operation.OR and \
-            all(map(lambda t: t.operation in exceptable or
-                              (t.operation==Operation.NOT and t.sub_formulas.operation in exceptable), self.sub_formulas))
+        acceptable = {Operation.VARIABLE, Operation.TAUTOLOGY, Operation.FALSUM}
+        return (self.operation == Operation.OR and
+            all(map(lambda t: t.operation in acceptable or
+                              (t.operation==Operation.NOT and t.sub_formulas.operation in acceptable), self.sub_formulas))) \
+            or self.is_basic_el()
 
     def is_kno(self):
         """
         :return: true if kno
         """
-        return self.operation == Operation.AND and all(map(lambda t: t.is_basic_or(), self.sub_formulas)) and len(self.sub_formulas) > 0
+        return (self.operation == Operation.AND and all(map(lambda t: t.is_basic_or(), self.sub_formulas))) or \
+               self.is_basic_or() or self.is_basic_el()
 
     def tseytin_step_one(self, used_vars=0):
         """
@@ -369,11 +415,6 @@ class BooleanFormula:
         # simplifying
         out.simplify()
         # prefer empty ands and ors to nothing for easier solving
-        if out.operation != Operation.AND:
-            out = BooleanFormula(Operation.AND, [out])
-        for sub_f in range(len(out.sub_formulas)):
-            if out.sub_formulas[sub_f].operation != Operation.OR:
-                out.sub_formulas[sub_f] = BooleanFormula(Operation.OR, [out.sub_formulas[sub_f]])
         return out
 
 
