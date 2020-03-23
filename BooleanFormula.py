@@ -341,7 +341,7 @@ class BooleanFormula:
         :return: true if its in a form of an OR in kno
         """
         acceptable = {Operation.VARIABLE, Operation.TAUTOLOGY, Operation.FALSUM}
-        return (self.operation == Operation.OR and \
+        return (self.operation == Operation.OR and
             all(map(lambda t: t.operation in acceptable or
                               (t.operation==Operation.NOT and t.sub_formulas.operation in acceptable), self.sub_formulas))) \
             or self.is_basic_el()
