@@ -36,7 +36,11 @@ def first_step_DPLL(bool_form):
 
 def DPLL(bool_form):
     bool_form.simplify_kno() # simplify
-    bool_form, equ = first_step_DPLL(bool_form) # solve pure variables
+    bool_form, eq = first_step_DPLL(bool_form) # solve pure variables
+    equ = eq
+    while eq != []:
+        bool_form, eq = first_step_DPLL(bool_form)
+        equ += eq
     if bool_form.operation == Operation.TAUTOLOGY: # we have finished the search
         return equ
     if bool_form.operation == Operation.FALSUM: # current path doesn't have solutions
