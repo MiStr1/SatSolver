@@ -40,6 +40,8 @@ def DPLL(kno_form, vars):
     fal = kno_form.partial_solve({var: False})
     solv = DPLL(fal, vars)
     if solv is not None:
+        for v in list(vars):
+            equ.append((v, True)) # assigning leftover vars
         return equ + solv + [(var, False)]
     for e in equ:
         vars.add(e[0])
