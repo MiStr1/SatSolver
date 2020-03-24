@@ -28,7 +28,7 @@ with open(input_file, mode='r') as input_data:
 
     cnf_formula = KnoFormula(clause_list)
 
-vars = [i for i in range(1, n_vars+1)]
+vars = set(range(1, n_vars+1))
 # vars = tuple(vars)
 
 solution = DPLL(cnf_formula, vars)
