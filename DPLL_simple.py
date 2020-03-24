@@ -13,6 +13,11 @@ def first_step_DPLL(kno_form):
 
 
 def DPLL(kno_form, vars):
+    """
+    :param kno_form: kno formula
+    :param vars: set of variables used in formula
+    :return: list of tuples assigning value to the variables if there is no solution None is returned
+    """
     kno_form, eq = first_step_DPLL(kno_form) # solve pure variables
     equ = eq
     while eq: # while there is change
@@ -29,6 +34,8 @@ def DPLL(kno_form, vars):
     tru = kno_form.partial_solve({var: True})
     solv = DPLL(tru, vars)
     if solv is not None:
+        for v in list(vars):
+            equ.append((v, True)) # assigning leftover vars
         return equ + solv + [(var, True)]
     fal = kno_form.partial_solve({var: False})
     solv = DPLL(fal, vars)
