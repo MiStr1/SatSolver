@@ -321,7 +321,6 @@ class BooleanFormula:
     def simplify_kno(self):
         """
         calls all cleaning functions until there is no more changes
-        leaves And with one element
         """
         while True:
             if not any([self.remove_empty(), self.remove_variables(), self.remove_constants()]):
