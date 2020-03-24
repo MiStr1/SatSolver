@@ -27,19 +27,23 @@ def DPLL(kno_form, vars):
         return equ
     if [] in kno_form.formula: # current path doesn't have solutions
         return None
-    map(lambda t: vars.remove(t[0]), equ)
+    for e in equ:
+        vars.remove(e[0])
     var = sample(vars,1)[0] # get random variable from formula and try giving it True or False
     vars.remove(var)
     tru = kno_form.partial_solve({var: True})
     solv = DPLL(tru, vars)
     if solv is not None:
-        map(lambda t: equ.append((t, True)), list(vars))  # assigning leftover vars
+        for v in list(vars):
+            equ.append((v, True))  # assigning leftover vars
         return equ + solv + [(var, True)]
     fal = kno_form.partial_solve({var: False})
     solv = DPLL(fal, vars)
     if solv is not None:
-        map(lambda t: equ.append((t, True)), list(vars))  # assigning leftover vars
+        for v in list(vars):
+            equ.append((v, True))  # assigning leftover vars
         return equ + solv + [(var, False)]
-    map(lambda t: vars.add(t[0]), equ)
+    for e in equ:
+        vars.add(e[0])
     vars.add(var)
     return None
