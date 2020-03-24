@@ -1,8 +1,9 @@
 from KnoFormula import *
 from DPLL_simple import DPLL
+from sys import argv
 
-input_file = "sudoku_mini.txt"
-output_file = "output_test.txt"
+input_file = argv[1]
+output_file = argv[2]
 
 # read input file
 with open(input_file, mode='r') as input_data:
@@ -32,6 +33,8 @@ vars = set(range(1, n_vars+1))
 # vars = tuple(vars)
 
 solution = DPLL(cnf_formula, vars)
+
+
 
 # write results in output file
 with open(output_file, mode="w") as out:
