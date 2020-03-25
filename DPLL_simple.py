@@ -1,5 +1,11 @@
 from random import choice
+from collections import defaultdict
+from functools import reduce
 
+
+def default_d():
+    # default value used for dictionary in second step
+    return [False, False]
 
 def first_step_DPLL(kno_form):
     """
@@ -13,6 +19,23 @@ def first_step_DPLL(kno_form):
     return new_formula, [(k, v) for k, v in pure_vars.items()]
 
 
+def second_step_aux(a,b):
+    if b > 0:
+        a[b][0] = True
+    else:
+        a[-1*b][1] = True
+    return a
+
+
+def second_step_DPLL(kno_form):
+    # ddict saves if certain variable is found in negation or in positive form [found in +, found in -] bool
+    ddict = reduce(second_step_aux, reduce(lambda a,b : a+b, kno_form.formula, []), defaultdict(default_d))
+    pure_vars = reduce(lambda a,b: a+[(b[0],b[1][0])] if (b[1][0] ^ b[1][1]) else a, ddict.items(), [])
+    new_formula = kno_form.partial_solve(dict(pure_vars))
+    print(pure_vars)
+    return new_formula, pure_vars
+
+
 def DPLL(kno_form):
     """
     :param kno_form: kno formula
@@ -24,6 +47,8 @@ def DPLL(kno_form):
         if not eq:
             break
         equ += eq
+    # kno_form, eq = second_step_DPLL(kno_form) doesn't help and only duplicates runtime
+    # equ += eq
     if [] in kno_form.formula:  # current path doesn't have solutions
         return None
     if len(kno_form.formula) == 0:  # we have finished the search
