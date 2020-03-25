@@ -32,7 +32,6 @@ def second_step_DPLL(kno_form):
     ddict = reduce(second_step_aux, reduce(lambda a,b : a+b, kno_form.formula, []), defaultdict(default_d))
     pure_vars = reduce(lambda a,b: a+[(b[0],b[1][0])] if (b[1][0] ^ b[1][1]) else a, ddict.items(), [])
     new_formula = kno_form.partial_solve(dict(pure_vars))
-    print(pure_vars)
     return new_formula, pure_vars
 
 
