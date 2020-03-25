@@ -36,4 +36,4 @@ class KnoFormula:
         return " ∧ ".join(map(lambda t: "( " + " ∨ ".join(map(str, t)) + " )", self.formula))
 
     def get_vars(self):
-        return list(reduce(lambda a, b: a + list(map(abs, b)), self.formula, []))
+        return reduce(lambda a, b: a + list(map(abs, b)), self.formula, [])
