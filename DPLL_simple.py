@@ -30,9 +30,6 @@ def DPLL(kno_form, vars):
         return None
     for e in equ:
         vars.remove(e[0])
-    print(repr(kno_form.formula))
-    print(len(kno_form.formula))
-    print("break")
     if len(kno_form.formula) == 0:  # we have finished the search
         for v in list(vars):
             equ.append((v, False))  # assigning leftover vars
