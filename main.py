@@ -2,6 +2,7 @@ from KnoFormula import *
 from DPLL_simple import DPLL
 from sys import argv
 import timeit
+from pprint import pprint
 
 if __name__ == "__main__":
     input_file = argv[1]
@@ -15,8 +16,7 @@ if __name__ == "__main__":
         clause_list = []
 
         for line in lines:
-            elements = line.split(" ")
-
+            elements = line.strip("\n\r ").split(" ")
             # skip comments at the start of the input file
             if elements[0] != "c":
                 if elements[0] == "p":
@@ -27,12 +27,12 @@ if __name__ == "__main__":
                     # write and save the clause
                     clause = []
                     # the last two elements are "0", "\n" so we skip them
-                    for el in elements[:-2]:
+                    for el in elements[:-1]:
                         clause.append(int(el))
                     clause_list.append(clause)
 
         cnf_formula = KnoFormula(clause_list)
-
+        
     vars = set(range(1, n_vars + 1))
 
     solution = DPLL(cnf_formula, vars)
