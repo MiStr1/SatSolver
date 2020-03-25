@@ -27,7 +27,7 @@ if __name__ == "__main__":
                     # write and save the clause
                     clause = []
                     # the last two elements are "0", "\n" so we skip them
-                    for el in elements[:-1]:
+                    for el in elements[:-2]:
                         clause.append(int(el))
                     clause_list.append(clause)
 
