@@ -32,10 +32,8 @@ if __name__ == "__main__":
                     clause_list.append(clause)
 
         cnf_formula = KnoFormula(clause_list)
-        
-    vars = set(range(1, n_vars + 1))
 
-    solution = DPLL(cnf_formula, vars)
+    solution = DPLL(cnf_formula)
 
     # write results in output file
     with open(output_file, mode="w") as out:

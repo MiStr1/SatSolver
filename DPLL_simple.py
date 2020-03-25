@@ -1,5 +1,4 @@
-from random import sample
-from copy import copy
+from random import choice
 
 
 def first_step_DPLL(kno_form):
@@ -14,10 +13,9 @@ def first_step_DPLL(kno_form):
     return new_formula, [(k, v) for k, v in pure_vars.items()]
 
 
-def DPLL(kno_form, vars):
+def DPLL(kno_form):
     """
     :param kno_form: kno formula
-    :param vars: set of variables used in formula
     :return: list of tuples assigning value to the variables if there is no solution None is returned
     """
     equ = []
@@ -28,23 +26,15 @@ def DPLL(kno_form, vars):
         equ += eq
     if [] in kno_form.formula:  # current path doesn't have solutions
         return None
-    for e in equ:
-        vars.remove(e[0])
     if len(kno_form.formula) == 0:  # we have finished the search
-        for v in list(vars):
-            equ.append((v, False))  # assigning leftover vars
         return equ
-    var = sample(vars, 1)[0]  # get random variable from formula and try giving it True or False
-    vars.remove(var)
+    var = choice(kno_form.get_vars())  # get random variable from formula and try giving it True or False
     tru = kno_form.partial_solve({var: True})
-    solv = DPLL(tru, vars)
+    solv = DPLL(tru)
     if solv is not None:
         return equ + solv + [(var, True)]
     fal = kno_form.partial_solve({var: False})
-    solv = DPLL(fal, vars)
+    solv = DPLL(fal)
     if solv is not None:
         return equ + solv + [(var, False)]
-    for e in equ:
-        vars.add(e[0])
-    vars.add(var)
     return None
