@@ -46,8 +46,8 @@ def DPLL(kno_form):
         if not eq:
             break
         equ += eq
-    # kno_form, eq = second_step_DPLL(kno_form) doesn't help and only duplicates runtime
-    # equ += eq
+    kno_form, eq = second_step_DPLL(kno_form)
+    equ += eq
     if [] in kno_form.formula:  # current path doesn't have solutions
         return None
     if len(kno_form.formula) == 0:  # we have finished the search
