@@ -17,25 +17,25 @@ Returns `True` if solutions are the same and `False` if they are not
 
 ## KnoFormula
 
-`from KnoFormula import KnoFormula
+`from KnoFormula import KnoFormula`
 
-a = KnoFormula([[-1],[1,2],[-2,3]])
+`a = KnoFormula([[-1],[1,2],[-2,3]])`
 
-a.to_string()
+`a.to_string()`
 
-( -1 ) ∧ ( 1 ∨ 2 ) ∧ ( -2 ∨ 3 )
+`( -1 ) ∧ ( 1 ∨ 2 ) ∧ ( -2 ∨ 3 )`
 
-a.solve({1:False, 2: True, 3:True}) -> True
+`a.solve({1:False, 2: True, 3:True}) -> True`
 
-a.partial_solve({1: False}).to_string() 
+`a.partial_solve({1: False}).to_string() `
 
- ( 2 ) ∧ ( -2 ∨ 3 )`
+`( 2 ) ∧ ( -2 ∨ 3 )`
 
 
 ## DPLL_simple
 
-`from DPLL_simple import DPLL
+`from DPLL_simple import DPLL`
 
-DPLL(a,{1,2,3})
+`DPLL(a,{1,2,3})`
 
-[(1, False), (2, True), (3, True)]`
+`[(1, False), (2, True), (3, True)]`
