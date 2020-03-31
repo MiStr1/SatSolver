@@ -8,6 +8,8 @@ Sat solver for project in logika v računalništvu
 
 Run sat solver: `python main.py {path/to/input} {path/to/output}`
 
+Example CNF formula is of 30-queens problem stored in n-queens/n-queens-n30.txt
+
 ## Compare solutions
 
 Run script to compare solutions: `python compare_solutions.py {path/to/file1} {path/to/file2}`
